@@ -148,11 +148,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\commonLibs\GCD\gcd.cpp" />
     <ClCompile Include="headers\pch.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="resources\taskLib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\commonLibs\GCD\gcd.h" />
     <ClInclude Include="headers\pch.h" />
+    <ClInclude Include="headers\taskLib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

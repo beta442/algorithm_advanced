@@ -21,9 +21,21 @@
     <ClCompile Include="headers\pch.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="resources\taskLib.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\commonLibs\GCD\gcd.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\taskLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\commonLibs\GCD\gcd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
