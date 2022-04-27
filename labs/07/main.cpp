@@ -133,6 +133,7 @@ void PrintCoprimeNumbersNormalizedSequenceOfN(const int n, const short amountOfN
 
 	std::vector<std::vector<double>> minProduct(amountOfNumbers + 1, std::vector<double>(divisorsAmount + 1));
 	for (int i = 1; i <= amountOfNumbers; ++i)
+		// создадим матрицу, по которой сможем определить минимальный результат умножения двух делителей
 	{
 		for (int j = 0; j <= divisorsAmount; ++j)
 		{
@@ -152,17 +153,17 @@ void PrintCoprimeNumbersNormalizedSequenceOfN(const int n, const short amountOfN
 	}
 
 	int total = 0;
-	std::function<void(int, int, int)> count = [&](int lastDivider, int p, int rem) {
-		if (rem == 0)
+	std::function<void(int, int, int)> count = [&](int lastDividerIndex, int currDivider, int numbersLeft) {
+		if (numbersLeft == 0)
 		{
 			total++;
 			return;
 		}
-		for (int currDivider = lastDivider + 1; currDivider < divisorsAmount && p * minProduct[rem][currDivider] <= n; ++currDivider)
+		for (int currDividerIndex = lastDividerIndex + 1; currDividerIndex < divisorsAmount && currDivider * minProduct[numbersLeft][currDividerIndex] <= n; ++currDividerIndex)
 		{
-			if (coprime[lastDivider][currDivider])
+			if (coprime[lastDividerIndex][currDividerIndex])
 			{
-				count(currDivider, p * divisors[currDivider], rem - 1);
+				count(currDividerIndex, currDivider * divisors[currDividerIndex], numbersLeft - 1);
 			}
 		}
 	};
