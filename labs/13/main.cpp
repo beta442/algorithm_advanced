@@ -34,27 +34,28 @@ struct ParsedArgs
 	std::string message;
 };
 
+constexpr auto MAX_NEEDLE_SIZE = 255;
+
 ParsedArgs ParseArgs(std::ifstream& inputFile, std::ofstream& outputFile)
 {
 	ParsedArgs parsedArgs{ std::nullopt, "" };
 
-	if (inputFile.bad())
+	if (!inputFile.is_open() || inputFile.bad())
 	{
 		std::cout << "Something bad with input file" << std::endl;
 		return parsedArgs;
 	}
-	if (outputFile.bad())
+	if (!outputFile.is_open() || outputFile.bad())
 	{
 		std::cout << "Something bad with output fail" << std::endl;
 		return parsedArgs;
 	}
-	if (inputFile.eof())
+	std::string needle;
+	if (inputFile.eof() || !std::getline(inputFile, needle))
 	{
 		parsedArgs.message = "Wrong arguments count";
 	}
-	std::string needle;
-	inputFile >> needle;
-	if (inputFile.fail() || (std::size(needle) < 1 || std::size(needle) > 255))
+	if (inputFile.fail() || (std::size(needle) < 1 || std::size(needle) > MAX_NEEDLE_SIZE))
 	{
 		parsedArgs.message = "Wrong input needle parameter. Length should be between 1 and 255";
 		return parsedArgs;
@@ -79,9 +80,131 @@ ParsedArgs ParseArgs(std::ifstream& inputFile, std::ofstream& outputFile)
 	return parsedArgs;
 }
 
+// реализация префикс функции для заданной строки
+std::vector<int> PrefixFunction(const std::string& needle)
+{
+	int prevLongestPrefixSuffix = 0;
+
+	size_t i = 1, patternSize = std::size(needle);
+	std::vector<int> prefix(patternSize);
+	prefix[0] = 0;
+	while (i < patternSize)
+	{
+		if (needle[i] == needle[prevLongestPrefixSuffix])
+		{
+			prevLongestPrefixSuffix++;
+			prefix[i] = prevLongestPrefixSuffix;
+			i++;
+		}
+		else
+		{
+			if (prevLongestPrefixSuffix != 0)
+			{
+				prevLongestPrefixSuffix = prefix[prevLongestPrefixSuffix - 1];
+			}
+			else
+			{
+				prefix[i] = 0;
+				i++;
+			}
+		}
+	}
+	return prefix;
+}
+
+std::string StringToLower(std::string s)
+{
+	std::transform(s.begin(), s.end(), s.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+	return s;
+}
+
+struct FilePos
+{
+	size_t lineIndex, pos;
+};
+
+std::vector<FilePos> result;
+
+// 0 - поиск окночился ошибкой, else - требуется добавить к string продолжение, чтобы посмотреть, можно ли найти вхождение дальше
+size_t KMPSearch(const std::string& string, // строка для анализа
+	const std::vector<int>& prefix, // массив переходов
+	const std::string& needle, // строка поиска
+	const size_t lineIndex, // индекс строки для анализа в файле, нумерация от 1
+	const size_t offset) // передать смещение для печати позиции в строке, используется в случае, когда поиск мог бы быть продолжен
+{
+	std::string lowerString = StringToLower(string);
+	std::string lowerNeedle = StringToLower(needle);
+
+	size_t searchStringLength = std::size(lowerString), i = 0, j = 0, needleSize = std::size(lowerNeedle);
+	while (i < searchStringLength)
+	{
+		if (lowerNeedle[j] == lowerString[i])
+		{
+			j++;
+			i++;
+		}
+
+		if (j == needleSize)
+		{
+			result.push_back({ lineIndex, i + 1 - j + (offset ? offset : 0) });
+			j = prefix[j - 1];
+		}
+		else if (i < searchStringLength && lowerNeedle[j] != lowerString[i])
+		{
+			if (j != 0)
+			{
+				j = prefix[j - 1];
+			}
+			else
+			{
+				++i;
+			}
+		}
+	}
+	return j;
+}
+
 void PrintLineAndPosAtLineByKMP(std::ifstream& searchFile, const std::string needle, std::ostream& outputFile)
 {
+	std::vector<int> prefix = PrefixFunction(needle);
 
+	std::string searchString, buffer;
+	size_t lineIndex = 1, collectedNeedleIndex, offset = 0;
+	const size_t needleSize = std::size(needle);
+	bool needToRead = true;
+	while (!searchFile.eof())
+	{
+		if (needToRead)
+		{
+			std::getline(searchFile, searchString);
+		}
+
+		collectedNeedleIndex = KMPSearch(searchString, prefix, needle, needToRead ? lineIndex : lineIndex - 1, offset);
+
+		if (collectedNeedleIndex != 0 && !searchFile.eof() && std::getline(searchFile, buffer))
+		{
+			offset = std::size(searchString) - collectedNeedleIndex;
+			searchString = searchString.substr(offset) + " " + buffer;
+			needToRead = false;
+		}
+		else
+		{
+			offset = 0;
+			needToRead = true;
+		}
+		++lineIndex;
+	}
+
+	if (result.size() == 0)
+	{
+		outputFile << "No" << std::endl;
+	}
+	for (size_t i = 0; i < result.size(); ++i)
+	{
+		std::cout << result[i].lineIndex << " " << result[i].pos << std::endl;
+		outputFile << result[i].lineIndex << " " << result[i].pos << std::endl;
+	}
 }
 
 int main()
@@ -105,7 +228,12 @@ int main()
 		return 1;
 	}
 
+	setlocale(0, "");
 	PrintLineAndPosAtLineByKMP(searchFile, needle, outputFile);
+
+	inputFile.close();
+	outputFile.close();
+	searchFile.close();
 
 	return 0;
 }
