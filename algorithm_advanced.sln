@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07", "07", "{228C2FE7-14A4-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "num_of_divisors", "labs\07\num_of_divisors.vcxproj", "{EAA31810-7E97-4BEE-8792-55A8E4F4F7C5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "13", "13", "{5107BEDF-00DD-4A9D-862A-876A2AF030A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kmp", "labs\13\kmp.vcxproj", "{B64ADACF-4DF3-43CC-9123-055AF13F2C55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,12 +27,21 @@ Global
 		{EAA31810-7E97-4BEE-8792-55A8E4F4F7C5}.Release|x64.Build.0 = Release|x64
 		{EAA31810-7E97-4BEE-8792-55A8E4F4F7C5}.Release|x86.ActiveCfg = Release|Win32
 		{EAA31810-7E97-4BEE-8792-55A8E4F4F7C5}.Release|x86.Build.0 = Release|Win32
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Debug|x64.ActiveCfg = Debug|x64
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Debug|x64.Build.0 = Debug|x64
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Debug|x86.ActiveCfg = Debug|Win32
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Debug|x86.Build.0 = Debug|Win32
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Release|x64.ActiveCfg = Release|x64
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Release|x64.Build.0 = Release|x64
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Release|x86.ActiveCfg = Release|Win32
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EAA31810-7E97-4BEE-8792-55A8E4F4F7C5} = {228C2FE7-14A4-404E-8C29-36210BC2EBA8}
+		{B64ADACF-4DF3-43CC-9123-055AF13F2C55} = {5107BEDF-00DD-4A9D-862A-876A2AF030A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {64787A66-9A88-4332-BE12-AA9F55802807}
